@@ -1,7 +1,11 @@
 <sdf version='1.6'>
   <model name='griffin_payload'>
+
+    <static>false</static>
+
     <link name='base_link'>
-      <pose frame=''>0 0 0.75 0 0 0</pose>
+      <pose frame=''>0 0 0 0 0 1.570796</pose>
+      <!--<pose frame=''>0 0 0.75 0 0 0</pose>-->
       <inertial>
         <pose frame=''>0 0 0.3 0 0 0</pose>
         <mass>4.5</mass>
@@ -14,15 +18,16 @@
           <izz>0.328</izz>
         </inertia>
       </inertial>
+
       <collision name='base_link_inertia_collision'>
-        <pose frame=''>0 0 0 0 0 1.570796</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
-            <uri>model://griffin_payload/meshes/griffin.dae</uri>
+            <scale>0.001 0.001 0.001</scale>
+            <uri>model://griffin_payload/meshes/griffin_2.dae</uri>
           </mesh>
         </geometry>
-        <surface>
+        <!--<surface>
           <contact>
             <ode>
               <min_depth>0.001</min_depth>
@@ -32,21 +37,103 @@
           <friction>
             <ode/>
           </friction>
-        </surface>
+        </surface>-->
       </collision>
+
       <visual name='base_link_inertia_visual'>
-        <pose frame=''>0 0 0 0 0 1.570796</pose>
+        <pose frame=''>0 0 0 0 0 0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
-            <uri>model://griffin_payload/meshes/griffin.dae</uri>
+            <scale>0.001 0.001 0.001</scale>
+            <uri>model://griffin_payload/meshes/griffin_2.dae</uri>
           </mesh>
         </geometry>
       </visual>
-      <gravity>1</gravity>
-      <velocity_decay/>
+      
+      
+      <!--<gravity>1</gravity>
+      <velocity_decay/>-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+         <sensor type="camera" name="camera1">
+          <always_on>1</always_on>
+          <update_rate>15</update_rate>
+          <visualize>1</visualize>
+          <pose> 0 -0.1 0.3 0 1.570796 0 </pose>
+
+
+          <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+           <alwaysOn>true</alwaysOn>
+           <updateRate>0</updateRate>
+           <cameraName>single_pendulum/camera1</cameraName>
+           <imageTopicName>image_raw</imageTopicName>
+           <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+           <frameName>camera_link</frameName>
+           <CxPrime>320</CxPrime>
+           <Cx>320</Cx>
+           <Cy>240</Cy> 
+           <!--<focalLength>507.872735</focalLength>--><!-- image_width / (2*tan(hfov_radian /2)) --><!-- 320 for wide and 772.55 for narrow stereo camera -->
+           <focalLength>530.472938</focalLength>
+           <hackBaseline>0.07</hackBaseline>
+           <!--<distortionK1>-0.2583</distortionK1>
+           <distortionK2>0.0770</distortionK2>-->
+           <distortionK1>0</distortionK1>
+           <distortionK2>0</distortionK2>
+           <distortionK3>0</distortionK3>
+           <distortionT1>0</distortionT1>
+           <distortionT2>0</distortionT2>
+          </plugin>
+
+
+          <camera>
+           <pose> 0 0 0 0 0 0 </pose>
+           <!--<horizontal_fov>1.8</horizontal_fov>
+          <image>
+            <width>1280</width>
+            <height>720</height>
+           </image>-->
+           <horizontal_fov>1.085594795</horizontal_fov>
+           <image>
+            <width>640</width>
+            <height>480</height>
+           </image>
+           <clip>
+            <near>0.01</near>
+            <far>25</far>
+           </clip>
+           
+           <save enabled="true"> 
+            <path>/home/francois/Documents/gazebo_photos</path> 
+           </save> 
+          
+           <noise>
+            <type>
+             gaussian
+            </type>
+            <mean>0</mean>
+            <stddev>0.03</stddev>
+           </noise>
+          </camera>
+         </sensor>
     </link>
 
+
+
+
+
+
+<!--
     <link name="payload_link">
       <pose frame=''>0 0 0.05 0 0 0</pose>
       <inertial>
@@ -61,9 +148,17 @@
           <izz>0.0005</izz>
         </inertia>
       </inertial>
+     
       <collision name='payload_link_collision'>
         <pose frame=''>0 0 0 0 0 0</pose>
         <geometry>
+
+
+          <cylinder>
+            <radius>0.0225</radius>
+            <length>0.13</length>
+          </cylinder>
+
           <sphere>
             <radius>0.05</radius>
           </sphere>
@@ -80,9 +175,16 @@
           </friction>
         </surface>
       </collision>
+      
+      
       <visual name='payload_link_spehere_visual'>
         <pose frame=''>0 0 0 0 0 0</pose>
         <geometry>
+          <cylinder>
+            <radius>0.0225</radius>
+            <length>0.13</length>
+          </cylinder>
+
           <sphere>
             <radius>0.05</radius>
           </sphere>
@@ -94,6 +196,8 @@
           </script>
         </material>
       </visual>
+
+
       <visual name='payload_link_pendulum_visual'>
         <pose frame=''>0 0 0.5 0 0 0</pose>
         <geometry>
@@ -111,14 +215,20 @@
       </visual>
       <gravity>1</gravity>
       <velocity_decay/>
+
     </link>
 
-    <joint type="revolute" name="quad_pendulum_joint">
+
+
+
+
+
+    <joint type="ball" name="quad_pendulum_joint">
       <pose>0 0 1 0 0 0</pose>
       <child>payload_link</child>
       <parent>base_link</parent>
       <axis>
-        <xyz>0 1 0</xyz>
+        <xyz>1 1 0</xyz>
         <dynamics>
           <damping>0</damping>
           <spring_stiffness>0</spring_stiffness>
@@ -127,6 +237,128 @@
     </joint>
 
     <static>0</static>
+
+
+
+  -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- my payload -->
+<link name= 'payload'>
+  <pose> 1 0 0.3 0 -1.570796327 0</pose> 
+  <inertial>
+   <mass>2</mass>
+   <pose>0 0 0 0 0 0</pose>
+   <inertia>
+    <ixx>0.001</ixx>
+    <iyy>0.001</iyy>
+    <izz>0.001</izz>
+    <ixy>0</ixy>
+    <ixz>0</ixz>
+    <iyz>0</iyz>
+   </inertia>
+  </inertial>
+  
+  <collision name='mass_collision'>
+    <pose> 0 0 0 0 0 0 </pose>
+   <geometry>
+      <cylinder>
+          <radius>0.0225</radius>
+          <length>0.13</length>
+         </cylinder>
+   </geometry>
+  </collision>
+
+  <visual name='rod_visual'>
+    <pose> 0 0 0.5 0 0 0 </pose>
+   <geometry>
+    <cylinder>
+     <radius>0.004</radius>
+     <length>1.0</length>
+    </cylinder>
+   </geometry>
+</visual>
+
+
+<visual name='mass_visual'>
+    <pose> 0 0 0 0 0 0 </pose>
+    <material> 
+      <ambient>0.1 0.1 0.1 1</ambient>
+      <diffuse>0.1 0.1 0.2 1</diffuse>
+      <specular>0 0 0 0</specular>
+      <emissive>0 0 0 1</emissive>
+    </material> 
+    
+       <geometry>
+        <cylinder>
+         <radius>0.0225</radius>
+         <length>0.13</length>
+        </cylinder>
+       </geometry>
+    </visual>
+
+
+
+
+
+
+
+
+</link>
+
+
+<joint name="pendulum_arm_to_griffin" type="ball">
+<parent>base_link</parent>
+<child>payload</child>
+<pose> 0 0 1 0 0 0 </pose>
+</joint>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- hier is al die plugins-->
+
+
+
+
 
     <plugin name='mavlink_interface' filename='libgazebo_mavlink_interface.so'>
       <robotNamespace/>
